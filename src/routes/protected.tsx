@@ -3,18 +3,8 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { Spinner } from '@chakra-ui/react';
 
 import { MainLayout } from '@/components/layout/MainLayout';
-import { PlanBuilderRoutes } from '@/features/plan-builder';
+import { Search } from '@/features/search/search';
 
-// import { lazyImport } from '@/utils/lazyImport';
-
-// const { DiscussionsRoutes } = lazyImport(
-//   () => import('@/features/discussions'),
-//   'DiscussionsRoutes'
-// );
-
-// const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
-// const { Profile } = lazyImport(() => import('@/features/users'), 'Profile');
-// const { Users } = lazyImport(() => import('@/features/users'), 'Users');
 
 const App = () => {
   return (
@@ -36,10 +26,7 @@ export const protectedRoutes = [
   {
     element: <App />,
     children: [
-      { path: '/sales-orders', element: <div>sales - orders - page</div> },
-      { path: '/work-center', element: <div>work - center - page</div> },
-      { path: '/scheduler', element: <div>scheduler - page</div> },
-      { path: '/plan-builder', element: <PlanBuilderRoutes></PlanBuilderRoutes> },
+      { path: '/', element: <Search></Search>  },
       { path: '*', element: <Navigate to="." /> },
     ],
   },

@@ -7,7 +7,7 @@ export interface TitleState {
   
   // Define the initial state using that type
   const initialState: TitleState = {
-    value: "Home"
+    value: "Nothes"
   }
 
 export const titleSlice = createSlice({

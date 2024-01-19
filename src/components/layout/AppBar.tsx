@@ -3,21 +3,10 @@ import logo from '@/assets/HowcoLogoWithText.png';
 import { selectTitle } from '@/stores/slices/titleSlice';
 
 import {
-   Box,
    Flex,
    Text,
-   IconButton,
-   Button,
-   Stack,
    Image,
-   Icon,
-   Link,
-   Popover,
-   PopoverTrigger,
-   PopoverContent,
    useColorModeValue,
-   useBreakpointValue,
-   useDisclosure,
    Center,
 } from '@chakra-ui/react';
 
@@ -42,22 +31,6 @@ export default function AppBar() {
                </Center>
             </Flex>
             <Text fontSize='4xl'>{title}</Text>            
-            <Stack flex={{ base: 1, md: 0 }} justify={'flex-end'} direction={'row'} spacing={6}>
-               <Button
-                  as={'a'}
-                  display={{ base: 'none', md: 'inline-flex' }}
-                  fontSize={'sm'}
-                  fontWeight={600}
-                  color={'white'}
-                  bg={'cyan.600'}
-                  href={'#'}
-                  _hover={{
-                     bg: 'cyan.400',
-                  }}
-               >
-                  Login
-               </Button>
-            </Stack>
          </Flex>
    );
 }
