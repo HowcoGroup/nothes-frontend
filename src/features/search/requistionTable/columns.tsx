@@ -7,21 +7,21 @@ export type Requisition = {
     requester: string
     requesitionVendor: string
     requesitionDescription: string
-    requesitionApprover: string
+    requesitionApprover: number
   }
    
   export const columns: ColumnDef<Requisition>[] = [
     {
       accessorKey: "pophead_id",
-      header: "Requesition Number",
+      header: "Requisition Number",
     },
     {
       accessorKey: "pophead_date",
-      header: "Requesition Date",
+      header: "Requisition Date",
     },
     {
-      accessorKey: "pophead_recordstatus",
-      header: "Requesition Status",
+      accessorKey: "pophead_description",
+      header: "Status",
     },
     {
       accessorKey: "pophead_requestedby",
@@ -29,14 +29,14 @@ export type Requisition = {
     },
     {
       accessorKey: "VEN_NM",
-      header: "Requesition Vendor",
+      header: "Requisition Vendor",
     },
     {
       accessorKey: "pophead_comments",
-      header: "Requesition Description",
+      header: "Requisition Description",
     },
     {
-      accessorKey: "Requesition Approver",
+      accessorKey: "approver_name",
       header: "Appprover",
     }
   ]

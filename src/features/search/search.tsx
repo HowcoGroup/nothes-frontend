@@ -14,8 +14,7 @@ import {
    FormLabel,
    FormControl,
 } from '@/components/ui/form';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input as ChakraInput } from '@chakra-ui/react';
 import {
    Select,
    SelectContent,
@@ -27,15 +26,20 @@ import { Separator } from '@/components/ui/separator';
 
 import { cn, formatDate } from '@/lib/utils';
 import { Approver } from '@/models/approver';
-import { Requisition, columns } from "../search/requistionTable/columns";
-import { DataTable } from "../search/requistionTable/data-table";
+import { BusinessUnit } from '@/models/businessUnit';
+import { Status } from '@/models/status';
+import { Type } from '@/models/type';
+import { Requisition, columns } from '../search/requistionTable/columns';
+import { DataTable } from '../search/requistionTable/data-table';
+import { useToast } from '@/components/ui/use-toast';
 
 export const Search = () => {
+   const { toast } = useToast();
    const formSchema = z.object({
-      startDate: z.date().optional(),
-      endDate: z.date().optional(),
+      startDate: z.coerce.date().optional(),
+      endDate: z.coerce.date().optional(),
       requisitionNumber: z.coerce.number().optional(),
-      requisitionStatus: z.coerce.number().optional(),
+      requisitionStatus: z.coerce.string().optional(),
       businessUnit: z.string().optional(),
       type: z.string().optional(),
       vendor: z.string().optional(),
@@ -61,22 +65,71 @@ export const Search = () => {
    });
 
    const [approversList, setApproversList] = useState<Approver[]>([]);
+   const [businessUnitList, setBusinessUnitList] = useState<BusinessUnit[]>([]);
+   const [statusList, setStatusList] = useState<Status[]>([]);
+   const [typeList, setTypeList] = useState<Type[]>([]);
    const [searchResults, setSearchResults] = useState<Requisition[]>([]);
+   const [isLoading, setIsLoading] = useState<boolean>(false);
 
    // 2. Define a submit handler.
    async function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log(values);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search`, {
-         method: 'POST',
-         headers: {
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(values),
-      });
-      const data = await res.json();
-      setSearchResults(data.searchResults);
-      console.log(data);
+      setIsLoading(true);
+      try {
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search`, {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values),
+         });
+         if (res.status !== 200) {
+            const error = await res.json();
+            toast({
+               title: 'Error',
+               description: error,
+               variant: 'destructive',
+            });
+            setIsLoading(false);
+            return;
+         }
+         const data = await res.json();
+         setSearchResults(data.searchResults);
+         if (data.searchResults.length === 0) {
+            toast({
+               title: 'No results found',
+               description: 'No results found for the search criteria',
+               variant: 'destructive',
+            });
+         }
+         setIsLoading(false);
+      } catch (error: any) {
+         toast({
+            title: 'Error',
+            description: error.message,
+            variant: 'destructive',
+         });
+         setIsLoading(false);
+      }
    }
+
+   const clear = () => {
+      form.reset({
+         startDate: undefined,
+         endDate: undefined,
+         requisitionNumber: undefined,
+         requisitionStatus: undefined,
+         businessUnit: undefined,
+         type: undefined,
+         vendor: undefined,
+         itemDescription: undefined,
+         requestedBy: undefined,
+         approver: undefined,
+      });
+   };
+
+   const areAllControlsUndefined = Object.values(form.getValues()).every(
+      (value) => value === undefined,
+   );
 
    useEffect(() => {
       const getApprovers = async () => {
@@ -90,11 +143,47 @@ export const Search = () => {
          const data = await res.json();
          setApproversList(data.approvers);
       };
+      const getBusinessUnit = async () => {
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/businessUnit`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         });
+         const data = await res.json();
+         setBusinessUnitList(data.businessUnit);
+      };
+      const getStatus = async () => {
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/status`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         });
+         const data = await res.json();
+         setStatusList(data.status);
+      };
+      const getType = async () => {
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/type`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         });
+         const data = await res.json();
+         setTypeList(data.type);
+      };
       getApprovers();
+      getBusinessUnit();
+      getType();
+      getStatus();
    }, []);
 
    return (
-      <div>
+      <div className="w-full m-8">
          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                <div className="grid grid-flow-row grid-cols-4 gap-3">
@@ -116,10 +205,21 @@ export const Search = () => {
                      name="requisitionStatus"
                      render={({ field }) => (
                         <FormItem>
-                           <FormLabel>Requisition Status</FormLabel>
-                           <FormControl>
-                              <Input {...field} type="number" />
-                           </FormControl>
+                           <FormLabel>Status</FormLabel>
+                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                 <SelectTrigger>
+                                    <SelectValue placeholder="Select Status" />
+                                 </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                 {statusList.map((status: Status) => (
+                                    <SelectItem key={status.id} value={status.id.toString()}>
+                                       <span>{status.description}</span>
+                                    </SelectItem>
+                                 ))}
+                              </SelectContent>
+                           </Select>
                            <FormMessage />
                         </FormItem>
                      )}
@@ -133,33 +233,21 @@ export const Search = () => {
                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select business unit" />
+                                    <SelectValue placeholder="Select Business Unit" />
                                  </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                 <SelectItem value="1" key="1">
-                                    New
-                                 </SelectItem>
-                                 <SelectItem value="2" key="2">
-                                    Coding required
-                                 </SelectItem>
-                                 <SelectItem value="3" key="3">
-                                    Approval Required
-                                 </SelectItem>
-                                 <SelectItem value="4" key="4">
-                                    Approved
-                                 </SelectItem>
-                                 <SelectItem value="5" key="5">
-                                    Rejected
-                                 </SelectItem>
-                                 <SelectItem value="6" key="6">
-                                    Received
-                                 </SelectItem>
-                                 <SelectItem value="7" key="7">
-                                    Invoiced
-                                 </SelectItem>
+                                 {businessUnitList.map((businessUnit: BusinessUnit) => (
+                                    <SelectItem
+                                       key={businessUnit.id}
+                                       value={businessUnit.id.toString()}
+                                    >
+                                       <span>{businessUnit.name}</span>
+                                    </SelectItem>
+                                 ))}
                               </SelectContent>
                            </Select>
+                           <FormMessage />
                         </FormItem>
                      )}
                   />
@@ -169,9 +257,20 @@ export const Search = () => {
                      render={({ field }) => (
                         <FormItem>
                            <FormLabel>Type</FormLabel>
-                           <FormControl>
-                              <Input {...field} />
-                           </FormControl>
+                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                 <SelectTrigger>
+                                    <SelectValue placeholder="Select Type" />
+                                 </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                 {typeList.map((type: Type) => (
+                                    <SelectItem key={type.id} value={type.id.toString()}>
+                                       <span>{type.description}</span>
+                                    </SelectItem>
+                                 ))}
+                              </SelectContent>
+                           </Select>
                            <FormMessage />
                         </FormItem>
                      )}
@@ -252,36 +351,12 @@ export const Search = () => {
                      render={({ field }) => (
                         <FormItem className="flex flex-col">
                            <FormLabel>Start Date</FormLabel>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button
-                                       variant={'outline'}
-                                       className={cn(
-                                          'w-full pl-3 text-left font-normal',
-                                          !field.value && 'text-muted-foreground',
-                                       )}
-                                    >
-                                       {field.value ? (
-                                          formatDate(field.value.toString())
-                                       ) : (
-                                          <span>Pick a date</span>
-                                       )}
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                       date > new Date() || date < new Date('1900-01-01')
-                                    }
-                                    initialFocus
-                                 />
-                              </PopoverContent>
-                           </Popover>
+                           <ChakraInput
+                              placeholder="Select Date and Time"
+                              size="md"
+                              type="date"
+                              {...field}
+                           />
                            <FormMessage />
                         </FormItem>
                      )}
@@ -292,51 +367,32 @@ export const Search = () => {
                      render={({ field }) => (
                         <FormItem className="flex flex-col">
                            <FormLabel>End Date</FormLabel>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button
-                                       variant={'outline'}
-                                       className={cn(
-                                          'w-full pl-3 text-left font-normal',
-                                          !field.value && 'text-muted-foreground',
-                                       )}
-                                    >
-                                       {field.value ? (
-                                          formatDate(field.value.toString())
-                                       ) : (
-                                          <span>Pick a date</span>
-                                       )}
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                       date > new Date() || date < new Date('1900-01-01')
-                                    }
-                                    initialFocus
-                                 />
-                              </PopoverContent>
-                           </Popover>
-                           <FormMessage />
+                           <ChakraInput
+                              placeholder="Select Date and Time"
+                              size="md"
+                              type="date"
+                              {...field}
+                           />
                         </FormItem>
                      )}
                   />
                </div>
                <div className="flex flex-row gap-3 items-center justify-center">
-                  <Button className="" type="submit">
+                  <Button
+                     disabled={isLoading || areAllControlsUndefined}
+                     className=""
+                     type="submit"
+                  >
                      Search
                   </Button>
-                  <Button className="bg-red-500 ">Clear</Button>
+                  <Button type="button" onClick={clear} className="bg-red-500 ">
+                     Clear
+                  </Button>
                </div>
             </form>
          </Form>
-         <Separator className='mt-5'></Separator>
-         <DataTable columns={columns} data={searchResults} />
+         <Separator className="mt-5"></Separator>
+         <DataTable columns={columns} data={searchResults} isLoading={isLoading} />
       </div>
    );
 };
