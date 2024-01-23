@@ -1,6 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import ToggleButton from '@/components/utility/ToggleButton';
-import { CollapsibleTrigger } from '@/components/ui/collapsible';
 export type Requisition = {
    requesitionNumber: string;
    requisitionDate: string;
