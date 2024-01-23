@@ -38,8 +38,6 @@ export function DataTable<TData, TValue>({
       getPaginationRowModel: getPaginationRowModel(),
    });
 
-   console.log(data, table, table.getRowModel().rows);
-
    return (
       <div>
          <div className="rounded-md border border-black">

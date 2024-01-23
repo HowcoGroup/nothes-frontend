@@ -22,9 +22,7 @@ import {
    SelectTrigger,
    SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 
-import { cn, formatDate } from '@/lib/utils';
 import { Approver } from '@/models/approver';
 import { BusinessUnit } from '@/models/businessUnit';
 import { Status } from '@/models/status';
@@ -36,9 +34,9 @@ import { useToast } from '@/components/ui/use-toast';
 export const Search = () => {
    const { toast } = useToast();
    const formSchema = z.object({
-      startDate: z.coerce.date().optional(),
-      endDate: z.coerce.date().optional(),
-      requisitionNumber: z.coerce.number().optional(),
+      startDate: z.coerce.string().optional(),
+      endDate: z.coerce.string().optional(),
+      requisitionNumber: z.coerce.string().optional(),
       requisitionStatus: z.coerce.string().optional(),
       businessUnit: z.string().optional(),
       type: z.string().optional(),
@@ -51,16 +49,16 @@ export const Search = () => {
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
-         startDate: undefined,
-         endDate: undefined,
-         requisitionNumber: undefined,
-         requisitionStatus: undefined,
-         businessUnit: undefined,
-         type: undefined,
-         vendor: undefined,
-         itemDescription: undefined,
-         requestedBy: undefined,
-         approver: undefined,
+         startDate: '',
+         endDate: '',
+         requisitionNumber: '',
+         requisitionStatus: '',
+         businessUnit: '',
+         type: '',
+         vendor: '',
+         itemDescription: '',
+         requestedBy: '',
+         approver: '',
       },
    });
 
@@ -70,6 +68,7 @@ export const Search = () => {
    const [typeList, setTypeList] = useState<Type[]>([]);
    const [searchResults, setSearchResults] = useState<Requisition[]>([]);
    const [isLoading, setIsLoading] = useState<boolean>(false);
+   const [key, setKey] = useState(+new Date());
 
    // 2. Define a submit handler.
    async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -114,22 +113,21 @@ export const Search = () => {
 
    const clear = () => {
       form.reset({
-         startDate: undefined,
-         endDate: undefined,
-         requisitionNumber: undefined,
-         requisitionStatus: undefined,
-         businessUnit: undefined,
-         type: undefined,
-         vendor: undefined,
-         itemDescription: undefined,
-         requestedBy: undefined,
-         approver: undefined,
+         startDate: '',
+         endDate: '',
+         requisitionNumber: '',
+         requisitionStatus: '',
+         businessUnit: '',
+         type: '',
+         vendor: '',
+         itemDescription: '',
+         requestedBy: '',
+         approver: '',
       });
+      setKey(+new Date());
    };
 
-   const areAllControlsUndefined = Object.values(form.getValues()).every(
-      (value) => value === undefined,
-   );
+   const areAllControlsUndefined = Object.values(form.getValues()).every((value) => value === '');
 
    useEffect(() => {
       const getApprovers = async () => {
@@ -185,7 +183,7 @@ export const Search = () => {
    return (
       <div className="w-full m-8">
          <div className="rounded-md border p-5 mb-8 border-black">
-            <Form {...form}>
+            <Form key={key} {...form}>
                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   <div className="grid grid-flow-row grid-cols-4 gap-3">
                      <FormField
@@ -357,6 +355,11 @@ export const Search = () => {
                                  size="md"
                                  type="date"
                                  {...field}
+                                 // value={
+                                 //    field.value instanceof Date
+                                 //       ? field.value.toISOString().split('T')[0]
+                                 //       : field.value
+                                 // }
                               />
                               <FormMessage />
                            </FormItem>
@@ -373,6 +376,11 @@ export const Search = () => {
                                  size="md"
                                  type="date"
                                  {...field}
+                                 // value={
+                                 //    field.value instanceof Date
+                                 //       ? field.value.toISOString().split('T')[0]
+                                 //       : field.value
+                                 // }
                               />
                            </FormItem>
                         )}

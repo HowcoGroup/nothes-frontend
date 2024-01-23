@@ -36,7 +36,6 @@ export default function ItemRow({ itemId }: ItemRowProps) {
       };
       getItemsById(itemId);
    }, [itemId]);
-   console.log(items);
    return (
       <>
          {isLoading ? (
@@ -47,8 +46,11 @@ export default function ItemRow({ itemId }: ItemRowProps) {
             </TableRow>
          ) : (
             <>
-               {items.map((item) => (
-                  <TableRow className="bg-blue-200 hover:bg-blue-100">
+               {items.map((item, index) => (
+                  <TableRow
+                     key={`item ${item.id} ${index}`}
+                     className="bg-blue-200 hover:bg-blue-100"
+                  >
                      <TableCell>
                         <strong>GL-{item.glNumber}</strong>
                      </TableCell>
@@ -66,7 +68,9 @@ export default function ItemRow({ itemId }: ItemRowProps) {
                      <TableCell>
                         <strong>Delivery:</strong> {item.delivered.toString().slice(0, 10)}
                      </TableCell>
-                     <TableCell><strong>Total: </strong>${item.quantity * item.price}</TableCell>
+                     <TableCell>
+                        <strong>Total: </strong>${item.quantity * item.price}
+                     </TableCell>
                   </TableRow>
                ))}
             </>
