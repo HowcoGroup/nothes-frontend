@@ -184,214 +184,215 @@ export const Search = () => {
 
    return (
       <div className="w-full m-8">
-         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-               <div className="grid grid-flow-row grid-cols-4 gap-3">
-                  <FormField
-                     control={form.control}
-                     name="requisitionNumber"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Requisition Number</FormLabel>
-                           <FormControl>
-                              <Input {...field} type="number" />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="requisitionStatus"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Status</FormLabel>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+         <div className="rounded-md border p-5 mb-8 border-black">
+            <Form {...form}>
+               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="grid grid-flow-row grid-cols-4 gap-3">
+                     <FormField
+                        control={form.control}
+                        name="requisitionNumber"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Requisition Number</FormLabel>
                               <FormControl>
-                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select Status" />
-                                 </SelectTrigger>
+                                 <Input {...field} type="number" />
                               </FormControl>
-                              <SelectContent>
-                                 {statusList.map((status: Status) => (
-                                    <SelectItem key={status.id} value={status.id.toString()}>
-                                       <span>{status.description}</span>
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="businessUnit"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Business Unit</FormLabel>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="requisitionStatus"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Select Status" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    {statusList.map((status: Status) => (
+                                       <SelectItem key={status.id} value={status.id.toString()}>
+                                          <span>{status.description}</span>
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="businessUnit"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Business Unit</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Select Business Unit" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    {businessUnitList.map((businessUnit: BusinessUnit) => (
+                                       <SelectItem
+                                          key={businessUnit.id}
+                                          value={businessUnit.id.toString()}
+                                       >
+                                          <span>{businessUnit.name}</span>
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="type"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Type</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Select Type" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    {typeList.map((type: Type) => (
+                                       <SelectItem key={type.id} value={type.id.toString()}>
+                                          <span>{type.description}</span>
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="vendor"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Vendor</FormLabel>
                               <FormControl>
-                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select Business Unit" />
-                                 </SelectTrigger>
+                                 <Input {...field} />
                               </FormControl>
-                              <SelectContent>
-                                 {businessUnitList.map((businessUnit: BusinessUnit) => (
-                                    <SelectItem
-                                       key={businessUnit.id}
-                                       value={businessUnit.id.toString()}
-                                    >
-                                       <span>{businessUnit.name}</span>
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="type"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Type</FormLabel>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="itemDescription"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Item Description</FormLabel>
                               <FormControl>
-                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select Type" />
-                                 </SelectTrigger>
+                                 <Input {...field} />
                               </FormControl>
-                              <SelectContent>
-                                 {typeList.map((type: Type) => (
-                                    <SelectItem key={type.id} value={type.id.toString()}>
-                                       <span>{type.description}</span>
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="vendor"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Vendor</FormLabel>
-                           <FormControl>
-                              <Input {...field} />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="itemDescription"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Item Description</FormLabel>
-                           <FormControl>
-                              <Input {...field} />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="requestedBy"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Requestor</FormLabel>
-                           <FormControl>
-                              <Input {...field} />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="approver"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Approver</FormLabel>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="requestedBy"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Requestor</FormLabel>
                               <FormControl>
-                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select an approver" />
-                                 </SelectTrigger>
+                                 <Input {...field} />
                               </FormControl>
-                              <SelectContent>
-                                 {approversList.map((approver: Approver) => (
-                                    <SelectItem
-                                       key={approver.iPortUserId}
-                                       value={approver.iPortUserId.toString()}
-                                    >
-                                       <span>
-                                          {approver.FirstName} {approver.LastName}
-                                       </span>
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-               </div>
-               <div className="grid grid-cols-2 w-full justify-evenly items-center gap-3">
-                  <FormField
-                     control={form.control}
-                     name="startDate"
-                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                           <FormLabel>Start Date</FormLabel>
-                           <ChakraInput
-                              placeholder="Select Date and Time"
-                              size="md"
-                              type="date"
-                              {...field}
-                           />
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="endDate"
-                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                           <FormLabel>End Date</FormLabel>
-                           <ChakraInput
-                              placeholder="Select Date and Time"
-                              size="md"
-                              type="date"
-                              {...field}
-                           />
-                        </FormItem>
-                     )}
-                  />
-               </div>
-               <div className="flex flex-row gap-3 items-center justify-center">
-                  <Button
-                     disabled={isLoading || areAllControlsUndefined}
-                     className=""
-                     type="submit"
-                  >
-                     Search
-                  </Button>
-                  <Button type="button" onClick={clear} className="bg-red-500 ">
-                     Clear
-                  </Button>
-               </div>
-            </form>
-         </Form>
-         <Separator className="mt-5"></Separator>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="approver"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Approver</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                 <FormControl>
+                                    <SelectTrigger>
+                                       <SelectValue placeholder="Select an approver" />
+                                    </SelectTrigger>
+                                 </FormControl>
+                                 <SelectContent>
+                                    {approversList.map((approver: Approver) => (
+                                       <SelectItem
+                                          key={approver.iPortUserId}
+                                          value={approver.iPortUserId.toString()}
+                                       >
+                                          <span>
+                                             {approver.FirstName} {approver.LastName}
+                                          </span>
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+                  <div className="grid grid-cols-2 w-full justify-evenly items-center gap-3">
+                     <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                           <FormItem className="flex flex-col">
+                              <FormLabel>Start Date</FormLabel>
+                              <ChakraInput
+                                 placeholder="Select Date and Time"
+                                 size="md"
+                                 type="date"
+                                 {...field}
+                              />
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                           <FormItem className="flex flex-col">
+                              <FormLabel>End Date</FormLabel>
+                              <ChakraInput
+                                 placeholder="Select Date and Time"
+                                 size="md"
+                                 type="date"
+                                 {...field}
+                              />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+                  <div className="flex flex-row gap-3 items-center justify-center">
+                     <Button
+                        disabled={isLoading || areAllControlsUndefined}
+                        className=""
+                        type="submit"
+                     >
+                        Search
+                     </Button>
+                     <Button type="button" variant="destructive" onClick={clear}>
+                        Clear
+                     </Button>
+                  </div>
+               </form>
+            </Form>
+         </div>
          <DataTable columns={columns} data={searchResults} isLoading={isLoading} />
       </div>
    );
